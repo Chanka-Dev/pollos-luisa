@@ -331,6 +331,21 @@
                 <a href="{{ route('turnos.index') }}" class="nav-link {{ Request::is('turnos*') ? 'active' : '' }}">
                     Turnos
                 </a>
+                <a href="{{ route('clientes.index') }}" class="nav-link {{ Request::is('clientes*') ? 'active' : '' }}">
+                    Clientes
+                </a>
+                <a href="{{ route('inventarios.index') }}" class="nav-link {{ Request::is('inventarios*') ? 'active' : '' }}">
+                    Inventarios
+                </a>
+                <a href="{{ route('pedidos.index') }}" class="nav-link {{ Request::is('pedidos*') ? 'active' : '' }}">
+                    Pedidos
+                </a>
+                <a href="{{ route('detalle-pedidos.index') }}" class="nav-link {{ Request::is('detalle-pedidos*') ? 'active' : '' }}">
+                    Detalle Pedidos
+                </a>
+                <a href="{{ route('ventas.index') }}" class="nav-link {{ Request::is('ventas*') ? 'active' : '' }}">
+                    Ventas
+                </a>
             </nav>
         </div>
     </header>

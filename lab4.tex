@@ -1,0 +1,1421 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{tocloft}
+\usepackage{times}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0.12, 0.53, 0.23}
+\definecolor{codeblue}{rgb}{0.01, 0.40, 0.84}
+\definecolor{codepurple}{rgb}{0.50, 0.00, 0.50}
+\definecolor{codebackground}{rgb}{0.97, 0.98, 0.99}
+\definecolor{codegray}{rgb}{0.45, 0.45, 0.45}
+\definecolor{codeorange}{rgb}{0.85, 0.45, 0.0}
+
+\lstdefinelanguage{purePHP}{
+    sensitive=true,
+    keywords={class,extends,public,protected,private,function,return,use,namespace,if,else,foreach,endforeach,endif,or,and,as,array,static,new,try,catch,throw,compact,route,view,dd,old,session,schema,blueprint,extends,implements,interface,trait,string,int,float,bool,void},
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morestring=[b]',
+}
+
+\hypersetup{
+    hypertexnames=false,
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue
+}
+
+% Configuración básica
+\geometry{letterpaper, left=3cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+\renewcommand{\baselinestretch}{1.5}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1em}
+
+% Configuración de numeración
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[R]{\thepage}}
+\pagestyle{plain}
+
+\setcounter{secnumdepth}{4}
+
+% Configuración de títulos
+\titleformat{\section}{\raggedleft\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\centering\bfseries}{\arabic{subsection}.}{0.5em}{}
+\titleformat{\subsubsection}{\raggedright\bfseries}{\arabic{subsection}.\arabic{subsubsection}.}{0.5em}{}
+
+\renewcommand{\thesubsection}{\arabic{subsection}}
+\renewcommand{\thesubsubsection}{\arabic{subsection}.\arabic{subsubsection}}
+
+\renewcommand{\cftsecfont}{\bfseries}
+\renewcommand{\cftsubsecfont}{\bfseries}
+\renewcommand{\cftsubsubsecfont}{\bfseries}
+
+\fontsize{14}{18}\selectfont
+
+% Configuración de Listings para código limpio en español
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{codebackground},
+    commentstyle=\color{codegreen}\itshape,
+    keywordstyle=\color{codeblue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    breaklines=true,
+    showstringspaces=false,
+    numbers=left,
+    frame=single,
+    rulecolor=\color{gray!30},
+    extendedchars=true,
+    inputencoding=utf8,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ñ}{{\~N}}1 {¿}{{\textquestiondown}}1 {¡}{{\textexclamdown}}1 {🍗}{{\raisebox{-0.25ex}{\includegraphics[height=2.2ex]{chicken.png}}}}1
+}
+
+\begin{document}
+
+% Portada
+\title{
+    \vspace*{-2cm}
+    UNIVERSIDAD PRIVADA DOMINGO SAVIO\\
+    SEDE SUCRE\\
+    \vspace{0.5cm}
+    \includegraphics[width=0.4\textwidth]{logo.png}\\
+    \vspace{0.5cm} 
+    INGENIERÍA DE SISTEMAS\\
+    \vspace{0.75cm}
+    Laboratorio 4: Segunda presentación Sistema de venta broasteria
+}
+\author{
+    Pedro Antonio López Chumacero
+}
+\date{
+    MATERIA: Desarrollo de Sistemas \\
+    DOCENTE: Ing. Erick Vidal Juarez Choque \\
+    \vspace{0.75cm}
+    SUCRE - BOLIVIA \\
+    \today
+}
+
+\begin{singlespace}
+\maketitle
+\thispagestyle{empty}
+\end{singlespace}
+\newpage
+\clearpage
+
+\pagenumbering{roman}
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+\clearpage
+
+\listoffigures
+\thispagestyle{empty}
+\newpage
+\clearpage
+
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section*{CONFIGURACIÓN GENERAL Y RUTAS}
+\addcontentsline{toc}{section}{CONFIGURACIÓN GENERAL Y RUTAS}
+\setcounter{section}{1}
+
+\subsection{Rutas del Sistema (routes/web.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\TurnoController;
+use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\DetallePedidoController;
+use App\Http\Controllers\VentaController;
+
+Route::get('/', function () {
+    return redirect()->route('empleados.index');
+});
+
+Route::resource('turnos', TurnoController::class);
+Route::resource('empleados', EmpleadoController::class);
+Route::resource('clientes', ClienteController::class);
+Route::resource('inventarios', InventarioController::class);
+Route::resource('pedidos', PedidoController::class);
+Route::resource('detalle-pedidos', DetallePedidoController::class);
+Route::resource('ventas', VentaController::class);
+\end{lstlisting}
+
+\subsection{Diseño Base (resources/views/layouts/app.blade.php)}
+\begin{lstlisting}[language=HTML]
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Pollos Luisa') - Panel de Gestion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary-color: #ff5e3a;
+            --primary-hover: #ff451b;
+            --secondary-color: #4f46e5;
+            --secondary-hover: #4338ca;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --glass-blur: blur(12px);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 94, 58, 0.1) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.5;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        header {
+            background: rgba(11, 15, 25, 0.7);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--card-border);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px; margin: 0 auto; padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), #ff9e80);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        .nav-links { display: flex; gap: 1.5rem; }
+
+        .nav-link {
+            font-size: 0.95rem; font-weight: 500; color: var(--text-muted);
+            padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-main); background: rgba(255, 255, 255, 0.05);
+        }
+
+        main { flex: 1; max-width: 1200px; width: 100%; margin: 2rem auto; padding: 0 2rem; }
+
+        .glass-card {
+            background: var(--card-bg); backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border); border-radius: 16px; padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 2rem;
+        }
+
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; border-bottom: 1px solid var(--card-border); padding-bottom: 1rem;
+        }
+
+        .card-title { font-size: 1.5rem; font-weight: 600; color: var(--text-main); }
+
+        .alert {
+            padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;
+            display: flex; align-items: center; font-size: 0.95rem; border: 1px solid transparent;
+        }
+
+        .alert-success { background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .alert-error { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #f87171; }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0.6rem 1.2rem; font-size: 0.9rem; font-weight: 600; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease; border: none; gap: 0.5rem;
+        }
+
+        .btn-primary { background: var(--primary-color); color: #ffffff; }
+        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-secondary { background: var(--secondary-color); color: #ffffff; }
+        .btn-secondary:hover { background: var(--secondary-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--card-border); }
+        .btn-outline:hover { background: rgba(255, 255, 255, 0.05); border-color: var(--text-muted); }
+        .btn-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
+        .btn-danger:hover { background: var(--accent-red); color: #ffffff; }
+
+        .table-responsive { overflow-x: auto; width: 100%; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { padding: 1rem; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--card-border); }
+        td { padding: 1.2rem 1rem; font-size: 0.95rem; border-bottom: 1px solid var(--card-border); color: var(--text-main); }
+        tr:hover td { background: rgba(255, 255, 255, 0.01); }
+        .actions-cell { display: flex; gap: 0.5rem; }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 500; color: var(--text-main); }
+        .form-control { width: 100%; padding: 0.75rem 1rem; font-size: 0.95rem; background: rgba(0, 0, 0, 0.2); border: 1px solid var(--card-border); border-radius: 8px; color: var(--text-main); outline: none; transition: all 0.2s ease; }
+        .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(255, 94, 58, 0.15); }
+        .error-message { color: #f87171; font-size: 0.8rem; margin-top: 0.25rem; display: block; }
+
+        footer { text-align: center; padding: 2rem; border-top: 1px solid var(--card-border); color: var(--text-muted); font-size: 0.85rem; background: rgba(11, 15, 25, 0.5); }
+        .badge { display: inline-flex; align-items: center; padding: 0.25rem 0.75rem; font-size: 0.75rem; font-weight: 600; border-radius: 50px; background: rgba(255, 255, 255, 0.05); color: var(--text-muted); }
+        .badge-accent { background: rgba(79, 70, 229, 0.2); color: #a5b4fc; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="{{ url('/') }}" class="logo">Pollos Luisa</a>
+            <nav class="nav-links">
+                <a href="{{ route('empleados.index') }}" class="nav-link {{ Request::is('empleados*') ? 'active' : '' }}">Empleados</a>
+                <a href="{{ route('turnos.index') }}" class="nav-link {{ Request::is('turnos*') ? 'active' : '' }}">Turnos</a>
+                <a href="{{ route('clientes.index') }}" class="nav-link {{ Request::is('clientes*') ? 'active' : '' }}">Clientes</a>
+                <a href="{{ route('inventarios.index') }}" class="nav-link {{ Request::is('inventarios*') ? 'active' : '' }}">Inventarios</a>
+                <a href="{{ route('pedidos.index') }}" class="nav-link {{ Request::is('pedidos*') ? 'active' : '' }}">Pedidos</a>
+                <a href="{{ route('detalle-pedidos.index') }}" class="nav-link {{ Request::is('detalle-pedidos*') ? 'active' : '' }}">Detalle Pedidos</a>
+                <a href="{{ route('ventas.index') }}" class="nav-link {{ Request::is('ventas*') ? 'active' : '' }}">Ventas</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        @if(session('success')) <div class="alert alert-success">{{ session('success') }}</div> @endif
+        @if(session('error')) <div class="alert alert-error">{{ session('error') }}</div> @endif
+        @yield('content')
+    </main>
+    <footer>&copy; {{ date('Y') }} Pollos Luisa. Todos los derechos reservados.</footer>
+</body>
+</html>
+\end{lstlisting}
+
+\newpage
+
+\section*{CRUD CLIENTES}
+\addcontentsline{toc}{section}{CRUD CLIENTES}
+\setcounter{section}{2}
+
+\subsection{Migración (2026\_07\_22\_000002\_create\_clientes\_table.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('clientes', function (Blueprint $table) {
+            $table->id();
+            $table->integer('ci');
+            $table->string('nombre_completo');
+            $table->string('email');
+            $table->integer('telefono');
+            $table->date('fecha_nacimiento');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('clientes');
+    }
+};
+\end{lstlisting}
+
+\subsection{Modelo (Cliente.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Cliente extends Model
+{
+    use HasFactory;
+
+    protected $table = 'clientes';
+
+    protected $fillable = [
+        'ci',
+        'nombre_completo',
+        'email',
+        'telefono',
+        'fecha_nacimiento',
+    ];
+
+    public function pedidos()
+    {
+        return $this->hasMany(Pedido::class, 'cliente_id');
+    }
+}
+\end{lstlisting}
+
+\subsection{Controlador (ClienteController.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Cliente;
+use Illuminate\Http\Request;
+
+class ClienteController extends Controller
+{
+    public function index()
+    {
+        $clientes = Cliente::latest()->get();
+        return view('clientes.index', compact('clientes'));
+    }
+
+    public function create()
+    {
+        return view('clientes.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'ci' => 'required|integer',
+            'nombre_completo' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telefono' => 'required|integer',
+            'fecha_nacimiento' => 'required|date',
+        ]);
+
+        Cliente::create($validated);
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente registrado con exito.');
+    }
+
+    public function show(Cliente $cliente)
+    {
+        $cliente->load('pedidos');
+        return view('clientes.show', compact('cliente'));
+    }
+
+    public function edit(Cliente $cliente)
+    {
+        return view('clientes.edit', compact('cliente'));
+    }
+
+    public function update(Request $request, Cliente $cliente)
+    {
+        $validated = $request->validate([
+            'ci' => 'required|integer',
+            'nombre_completo' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'telefono' => 'required|integer',
+            'fecha_nacimiento' => 'required|date',
+        ]);
+
+        $cliente->update($validated);
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente actualizado con exito.');
+    }
+
+    public function destroy(Cliente $cliente)
+    {
+        $cliente->delete();
+
+        return redirect()->route('clientes.index')->with('success', 'Cliente eliminado con exito.');
+    }
+}
+\end{lstlisting}
+
+\subsection{Vista Principal (clientes/index.blade.php)}
+\begin{lstlisting}[language=HTML]
+@extends('layouts.app')
+
+@section('title', 'Clientes')
+
+@section('content')
+<div class="glass-card">
+    <div class="card-header">
+        <div>
+            <h1 class="card-title">Gestion de Clientes</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Registro y administracion de clientes</p>
+        </div>
+        <a href="{{ route('clientes.create') }}" class="btn btn-primary">
+            + Nuevo Cliente
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>CI</th>
+                    <th>Nombre Completo</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($clientes as $cli)
+                <tr>
+                    <td>#{{ $cli->id }}</td>
+                    <td>{{ $cli->ci }}</td>
+                    <td><strong>{{ $cli->nombre_completo }}</strong></td>
+                    <td>{{ $cli->email }}</td>
+                    <td>{{ $cli->telefono }}</td>
+                    <td>{{ \Carbon\Carbon::parse($cli->fecha_nacimiento)->format('d/m/Y') }}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <a href="{{ route('clientes.show', $cli->id) }}" class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Ver</a>
+                            <a href="{{ route('clientes.edit', $cli->id) }}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Editar</a>
+                            <form action="{{ route('clientes.destroy', $cli->id) }}" method="POST" onsubmit="return confirm('Seguro de eliminar este cliente?');" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        No hay clientes registrados.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endsection
+\end{lstlisting}
+
+\subsection{Vista del CRUD de Clientes en Funcionamiento}
+A continuacion se presenta la captura de pantalla de la interfaz del CRUD de Clientes:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{view-clientes.png}
+    \caption{Interfaz de usuario del CRUD de Clientes}
+\end{figure}
+
+\newpage
+
+\section*{CRUD INVENTARIOS}
+\addcontentsline{toc}{section}{CRUD INVENTARIOS}
+\setcounter{section}{3}
+
+\subsection{Migración (2026\_07\_22\_000001\_create\_inventarios\_table.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('inventarios', function (Blueprint $table) {
+            $table->id();
+            $table->string('producto');
+            $table->decimal('stock_actual', 10, 2)->default(0);
+            $table->decimal('stock_minimo', 10, 2)->default(0);
+            $table->decimal('precio', 10, 2)->default(0.00);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('inventarios');
+    }
+};
+\end{lstlisting}
+
+\subsection{Modelo (Inventario.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Inventario extends Model
+{
+    use HasFactory;
+
+    protected $table = 'inventarios';
+
+    protected $fillable = [
+        'producto',
+        'stock_actual',
+        'stock_minimo',
+        'precio',
+    ];
+
+    public function detallePedidos()
+    {
+        return $this->hasMany(DetallePedido::class, 'inventario_id');
+    }
+}
+\end{lstlisting}
+
+\subsection{Controlador (InventarioController.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Inventario;
+use Illuminate\Http\Request;
+
+class InventarioController extends Controller
+{
+    public function index()
+    {
+        $inventarios = Inventario::latest()->get();
+        return view('inventarios.index', compact('inventarios'));
+    }
+
+    public function create()
+    {
+        return view('inventarios.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'producto' => 'required|string|max:255',
+            'stock_actual' => 'required|numeric|min:0',
+            'stock_minimo' => 'required|numeric|min:0',
+            'precio' => 'required|numeric|min:0',
+        ]);
+
+        Inventario::create($validated);
+
+        return redirect()->route('inventarios.index')->with('success', 'Producto registrado en el inventario con exito.');
+    }
+
+    public function show(Inventario $inventario)
+    {
+        return view('inventarios.show', compact('inventario'));
+    }
+
+    public function edit(Inventario $inventario)
+    {
+        return view('inventarios.edit', compact('inventario'));
+    }
+
+    public function update(Request $request, Inventario $inventario)
+    {
+        $validated = $request->validate([
+            'producto' => 'required|string|max:255',
+            'stock_actual' => 'required|numeric|min:0',
+            'stock_minimo' => 'required|numeric|min:0',
+            'precio' => 'required|numeric|min:0',
+        ]);
+
+        $inventario->update($validated);
+
+        return redirect()->route('inventarios.index')->with('success', 'Producto de inventario actualizado con exito.');
+    }
+
+    public function destroy(Inventario $inventario)
+    {
+        $inventario->delete();
+
+        return redirect()->route('inventarios.index')->with('success', 'Producto eliminado del inventario.');
+    }
+}
+\end{lstlisting}
+
+\subsection{Vista Principal (inventarios/index.blade.php)}
+\begin{lstlisting}[language=HTML]
+@extends('layouts.app')
+
+@section('title', 'Inventarios')
+
+@section('content')
+<div class="glass-card">
+    <div class="card-header">
+        <div>
+            <h1 class="card-title">Gestion de Inventario</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Control de insumos, productos y stock disponible</p>
+        </div>
+        <a href="{{ route('inventarios.create') }}" class="btn btn-primary">
+            + Nuevo Producto
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Producto</th>
+                    <th>Stock Actual</th>
+                    <th>Stock Minimo</th>
+                    <th>Precio (Bs.)</th>
+                    <th>Estado Stock</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($inventarios as $inv)
+                <tr>
+                    <td>#{{ $inv->id }}</td>
+                    <td><strong>{{ $inv->producto }}</strong></td>
+                    <td>{{ number_format($inv->stock_actual, 2) }}</td>
+                    <td>{{ number_format($inv->stock_minimo, 2) }}</td>
+                    <td>Bs. {{ number_format($inv->precio, 2) }}</td>
+                    <td>
+                        @if($inv->stock_actual <= $inv->stock_minimo)
+                            <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">Stock Bajo</span>
+                        @else
+                            <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">Normal</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="actions-cell">
+                            <a href="{{ route('inventarios.show', $inv->id) }}" class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Ver</a>
+                            <a href="{{ route('inventarios.edit', $inv->id) }}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Editar</a>
+                            <form action="{{ route('inventarios.destroy', $inv->id) }}" method="POST" onsubmit="return confirm('Seguro de eliminar este producto del inventario?');" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        No hay productos registrados en el inventario.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endsection
+\end{lstlisting}
+
+\subsection{Vista del CRUD de Inventarios en Funcionamiento}
+A continuacion se presenta la captura de pantalla de la interfaz del CRUD de Inventarios:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{view-inventarios.png}
+    \caption{Interfaz de usuario del CRUD de Inventarios}
+\end{figure}
+
+\newpage
+
+\section*{CRUD PEDIDOS}
+\addcontentsline{toc}{section}{CRUD PEDIDOS}
+\setcounter{section}{4}
+
+\subsection{Migración (2026\_07\_22\_000003\_create\_pedidos\_table.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('pedidos', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
+            $table->dateTime('fecha');
+            $table->string('estado')->default('Pendiente');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('pedidos');
+    }
+};
+\end{lstlisting}
+
+\subsection{Modelo (Pedido.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Pedido extends Model
+{
+    use HasFactory;
+
+    protected $table = 'pedidos';
+
+    protected $fillable = [
+        'cliente_id',
+        'fecha',
+        'estado',
+    ];
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class, 'cliente_id');
+    }
+
+    public function detalles()
+    {
+        return $this->hasMany(DetallePedido::class, 'pedido_id');
+    }
+
+    public function ventas()
+    {
+        return $this->hasMany(Venta::class, 'pedido_id');
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->detalles->sum('subtotal');
+    }
+}
+\end{lstlisting}
+
+\subsection{Controlador (PedidoController.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Pedido;
+use App\Models\Cliente;
+use Illuminate\Http\Request;
+
+class PedidoController extends Controller
+{
+    public function index()
+    {
+        $pedidos = Pedido::with(['cliente', 'detalles.inventario'])->latest()->get();
+        return view('pedidos.index', compact('pedidos'));
+    }
+
+    public function create()
+    {
+        $clientes = Cliente::orderBy('nombre_completo')->get();
+        return view('pedidos.create', compact('clientes'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'cliente_id' => 'required|exists:clientes,id',
+            'fecha' => 'required|date',
+            'estado' => 'required|string|in:Pendiente,En preparacion,Completado,Cancelado',
+        ]);
+
+        $pedido = Pedido::create($validated);
+
+        return redirect()->route('pedidos.index')->with('success', 'Pedido creado con exito.');
+    }
+
+    public function show(Pedido $pedido)
+    {
+        $pedido->load(['cliente', 'detalles.inventario', 'ventas']);
+        return view('pedidos.show', compact('pedido'));
+    }
+
+    public function edit(Pedido $pedido)
+    {
+        $clientes = Cliente::orderBy('nombre_completo')->get();
+        return view('pedidos.edit', compact('pedido', 'clientes'));
+    }
+
+    public function update(Request $request, Pedido $pedido)
+    {
+        $validated = $request->validate([
+            'cliente_id' => 'required|exists:clientes,id',
+            'fecha' => 'required|date',
+            'estado' => 'required|string|in:Pendiente,En preparacion,Completado,Cancelado',
+        ]);
+
+        $pedido->update($validated);
+
+        return redirect()->route('pedidos.index')->with('success', 'Pedido actualizado con exito.');
+    }
+
+    public function destroy(Pedido $pedido)
+    {
+        $pedido->delete();
+
+        return redirect()->route('pedidos.index')->with('success', 'Pedido eliminado con exito.');
+    }
+}
+\end{lstlisting}
+
+\subsection{Vista Principal (pedidos/index.blade.php)}
+\begin{lstlisting}[language=HTML]
+@extends('layouts.app')
+
+@section('title', 'Pedidos')
+
+@section('content')
+<div class="glass-card">
+    <div class="card-header">
+        <div>
+            <h1 class="card-title">Gestion de Pedidos</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Registro y seguimiento de comandas de clientes</p>
+        </div>
+        <a href="{{ route('pedidos.create') }}" class="btn btn-primary">
+            + Nuevo Pedido
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Pedido</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Total (Bs.)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($pedidos as $pedido)
+                <tr>
+                    <td>#{{ $pedido->id }}</td>
+                    <td><strong>{{ $pedido->cliente->nombre_completo ?? 'N/A' }}</strong></td>
+                    <td>{{ \Carbon\Carbon::parse($pedido->fecha)->format('d/m/Y H:i') }}</td>
+                    <td>
+                        @if($pedido->estado == 'Completado')
+                            <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">Completado</span>
+                        @elseif($pedido->estado == 'En preparacion')
+                            <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">En Preparacion</span>
+                        @elseif($pedido->estado == 'Cancelado')
+                            <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171;">Cancelado</span>
+                        @else
+                            <span class="badge" style="background: rgba(79, 70, 229, 0.2); color: #a5b4fc;">Pendiente</span>
+                        @endif
+                    </td>
+                    <td><strong>Bs. {{ number_format($pedido->total, 2) }}</strong></td>
+                    <td>
+                        <div class="actions-cell">
+                            <a href="{{ route('pedidos.show', $pedido->id) }}" class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Ver Detalle</a>
+                            <a href="{{ route('pedidos.edit', $pedido->id) }}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Editar</a>
+                            <form action="{{ route('pedidos.destroy', $pedido->id) }}" method="POST" onsubmit="return confirm('Seguro de eliminar este pedido?');" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        No hay pedidos registrados.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endsection
+\end{lstlisting}
+
+\subsection{Vista del CRUD de Pedidos en Funcionamiento}
+A continuacion se presenta la captura de pantalla de la interfaz del CRUD de Pedidos:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{view-pedidos.png}
+    \caption{Interfaz de usuario del CRUD de Pedidos}
+\end{figure}
+
+\newpage
+
+\section*{CRUD DETALLE PEDIDOS}
+\addcontentsline{toc}{section}{CRUD DETALLE PEDIDOS}
+\setcounter{section}{5}
+
+\subsection{Migración (2026\_07\_22\_000004\_create\_detalle\_pedidos\_table.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('detalle_pedidos', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('pedido_id')->constrained('pedidos')->onDelete('cascade');
+            $table->foreignId('inventario_id')->constrained('inventarios')->onDelete('cascade');
+            $table->decimal('cantidad', 10, 2);
+            $table->decimal('subtotal', 10, 2);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('detalle_pedidos');
+    }
+};
+\end{lstlisting}
+
+\subsection{Modelo (DetallePedido.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class DetallePedido extends Model
+{
+    use HasFactory;
+
+    protected $table = 'detalle_pedidos';
+
+    protected $fillable = [
+        'pedido_id',
+        'inventario_id',
+        'cantidad',
+        'subtotal',
+    ];
+
+    public function pedido()
+    {
+        return $this->belongsTo(Pedido::class, 'pedido_id');
+    }
+
+    public function inventario()
+    {
+        return $this->belongsTo(Inventario::class, 'inventario_id');
+    }
+}
+\end{lstlisting}
+
+\subsection{Controlador (DetallePedidoController.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\DetallePedido;
+use App\Models\Pedido;
+use App\Models\Inventario;
+use Illuminate\Http\Request;
+
+class DetallePedidoController extends Controller
+{
+    public function index()
+    {
+        $detalles = DetallePedido::with(['pedido.cliente', 'inventario'])->latest()->get();
+        return view('detalle_pedidos.index', compact('detalles'));
+    }
+
+    public function create(Request $request)
+    {
+        $pedidos = Pedido::with('cliente')->latest()->get();
+        $inventarios = Inventario::where('stock_actual', '>', 0)->get();
+        $selected_pedido_id = $request->query('pedido_id');
+
+        return view('detalle_pedidos.create', compact('pedidos', 'inventarios', 'selected_pedido_id'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'pedido_id' => 'required|exists:pedidos,id',
+            'inventario_id' => 'required|exists:inventarios,id',
+            'cantidad' => 'required|numeric|min:0.01',
+            'subtotal' => 'nullable|numeric|min:0',
+        ]);
+
+        $inventario = Inventario::findOrFail($validated['inventario_id']);
+
+        if (!isset($validated['subtotal']) || $validated['subtotal'] == 0) {
+            $validated['subtotal'] = $validated['cantidad'] * $inventario->precio;
+        }
+
+        $detalle = DetallePedido::create($validated);
+        $inventario->decrement('stock_actual', $validated['cantidad']);
+
+        return redirect()->route('pedidos.show', $validated['pedido_id'])
+            ->with('success', 'Detalle de pedido agregado con exito.');
+    }
+
+    public function show(DetallePedido $detallePedido)
+    {
+        $detallePedido->load(['pedido.cliente', 'inventario']);
+        return view('detalle_pedidos.show', compact('detallePedido'));
+    }
+
+    public function edit(DetallePedido $detallePedido)
+    {
+        $pedidos = Pedido::with('cliente')->get();
+        $inventarios = Inventario::all();
+        return view('detalle_pedidos.edit', compact('detallePedido', 'pedidos', 'inventarios'));
+    }
+
+    public function update(Request $request, DetallePedido $detallePedido)
+    {
+        $validated = $request->validate([
+            'pedido_id' => 'required|exists:pedidos,id',
+            'inventario_id' => 'required|exists:inventarios,id',
+            'cantidad' => 'required|numeric|min:0.01',
+            'subtotal' => 'nullable|numeric|min:0',
+        ]);
+
+        $inventario = Inventario::findOrFail($validated['inventario_id']);
+
+        if (!isset($validated['subtotal']) || $validated['subtotal'] == 0) {
+            $validated['subtotal'] = $validated['cantidad'] * $inventario->precio;
+        }
+
+        $detallePedido->update($validated);
+
+        return redirect()->route('pedidos.show', $validated['pedido_id'])
+            ->with('success', 'Detalle de pedido actualizado con exito.');
+    }
+
+    public function destroy(DetallePedido $detallePedido)
+    {
+        $pedidoId = $detallePedido->pedido_id;
+        $detallePedido->delete();
+
+        return redirect()->route('pedidos.show', $pedidoId)
+            ->with('success', 'Detalle de pedido eliminado con exito.');
+    }
+}
+\end{lstlisting}
+
+\subsection{Vista del CRUD de Detalle Pedidos en Funcionamiento}
+A continuacion se presenta la captura de pantalla de la interfaz del CRUD de Detalle Pedidos:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{view-detalle-pedidos.png}
+    \caption{Interfaz de usuario del CRUD de Detalle Pedidos}
+\end{figure}
+
+\newpage
+
+\section*{CRUD VENTAS}
+\addcontentsline{toc}{section}{CRUD VENTAS}
+\setcounter{section}{6}
+
+\subsection{Migración (2026\_07\_22\_000005\_create\_ventas\_table.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('ventas', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('pedido_id')->constrained('pedidos')->onDelete('cascade');
+            $table->dateTime('fecha');
+            $table->decimal('total', 10, 2);
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('ventas');
+    }
+};
+\end{lstlisting}
+
+\subsection{Modelo (Venta.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Venta extends Model
+{
+    use HasFactory;
+
+    protected $table = 'ventas';
+
+    protected $fillable = [
+        'pedido_id',
+        'fecha',
+        'total',
+    ];
+
+    public function pedido()
+    {
+        return $this->belongsTo(Pedido::class, 'pedido_id');
+    }
+}
+\end{lstlisting}
+
+\subsection{Controlador (VentaController.php)}
+\begin{lstlisting}[language=purePHP]
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Venta;
+use App\Models\Pedido;
+use Illuminate\Http\Request;
+
+class VentaController extends Controller
+{
+    public function index()
+    {
+        $ventas = Venta::with(['pedido.cliente', 'pedido.detalles.inventario'])->latest()->get();
+        return view('ventas.index', compact('ventas'));
+    }
+
+    public function create()
+    {
+        $pedidos = Pedido::with('cliente')->latest()->get();
+        return view('ventas.create', compact('pedidos'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'pedido_id' => 'required|exists:pedidos,id',
+            'fecha' => 'required|date',
+            'total' => 'required|numeric|min:0',
+        ]);
+
+        $venta = Venta::create($validated);
+
+        return redirect()->route('ventas.index')->with('success', 'Venta registrada con exito.');
+    }
+
+    public function show(Venta $venta)
+    {
+        $venta->load(['pedido.cliente', 'pedido.detalles.inventario']);
+        return view('ventas.show', compact('venta'));
+    }
+
+    public function edit(Venta $venta)
+    {
+        $pedidos = Pedido::with('cliente')->latest()->get();
+        return view('ventas.edit', compact('venta', 'pedidos'));
+    }
+
+    public function update(Request $request, Venta $venta)
+    {
+        $validated = $request->validate([
+            'pedido_id' => 'required|exists:pedidos,id',
+            'fecha' => 'required|date',
+            'total' => 'required|numeric|min:0',
+        ]);
+
+        $venta->update($validated);
+
+        return redirect()->route('ventas.index')->with('success', 'Venta actualizada con exito.');
+    }
+
+    public function destroy(Venta $venta)
+    {
+        $venta->delete();
+
+        return redirect()->route('ventas.index')->with('success', 'Venta eliminada con exito.');
+    }
+}
+\end{lstlisting}
+
+\subsection{Vista Principal (ventas/index.blade.php)}
+\begin{lstlisting}[language=HTML]
+@extends('layouts.app')
+
+@section('title', 'Ventas')
+
+@section('content')
+<div class="glass-card">
+    <div class="card-header">
+        <div>
+            <h1 class="card-title">Registro de Ventas</h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Facturacion y cierre de ventas realizadas</p>
+        </div>
+        <a href="{{ route('ventas.create') }}" class="btn btn-primary">
+            + Registrar Venta
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Venta</th>
+                    <th>Pedido ID</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Total (Bs.)</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($ventas as $venta)
+                <tr>
+                    <td>#{{ $venta->id }}</td>
+                    <td>
+                        <a href="{{ route('pedidos.show', $venta->pedido_id) }}" style="color: var(--primary-color); text-decoration: underline;">
+                            Pedido #{{ $venta->pedido_id }}
+                        </a>
+                    </td>
+                    <td><strong>{{ $venta->pedido->cliente->nombre_completo ?? 'N/A' }}</strong></td>
+                    <td>{{ \Carbon\Carbon::parse($venta->fecha)->format('d/m/Y H:i') }}</td>
+                    <td><strong>Bs. {{ number_format($venta->total, 2) }}</strong></td>
+                    <td>
+                        <div class="actions-cell">
+                            <a href="{{ route('ventas.show', $venta->id) }}" class="btn btn-outline" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Ver</a>
+                            <a href="{{ route('ventas.edit', $venta->id) }}" class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Editar</a>
+                            <form action="{{ route('ventas.destroy', $venta->id) }}" method="POST" onsubmit="return confirm('Seguro de eliminar esta venta?');" style="display:inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.8rem;">Eliminar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        No hay ventas registradas.
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+@endsection
+\end{lstlisting}
+
+\subsection{Vista del CRUD de Ventas en Funcionamiento}
+A continuacion se presenta la captura de pantalla de la interfaz del CRUD de Ventas:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{view-ventas.png}
+    \caption{Interfaz de usuario del CRUD de Ventas}
+\end{figure}
+
+\newpage
+
+\section*{INFORME TÉCNICO: FUNCIONAMIENTO DE MODELOS Y CONTROLADORES (CASO EMPLEADOS)}
+\addcontentsline{toc}{section}{INFORME TÉCNICO: FUNCIONAMIENTO DE MODELOS Y CONTROLADORES (CASO EMPLEADOS)}
+\setcounter{section}{7}
+
+\subsection{Introducción al Patrón MVC en Laravel}
+El framework Laravel implementa el patrón de arquitectura software \textbf{Modelo-Vista-Controlador (MVC)}, el cual promueve una clara separación de responsabilidades:
+
+\begin{itemize}
+    \item \textbf{Modelo (\texttt{Empleado.php}):} Representa la capa de datos y lógica de negocio. Mapea la tabla \texttt{empleados} en MySQL mediante Eloquent ORM.
+    \item \textbf{Controlador (\texttt{EmpleadoController.php}):} Actúa como mediador. Procesa las peticiones HTTP del usuario, aplica validaciones de seguridad y coordina las consultas con el modelo para retornar la respuesta visual.
+    \item \textbf{Vista (\texttt{resources/views/empleados/}):} Renderiza la interfaz gráfica en HTML/Blade presentada al cliente.
+\end{itemize}
+
+\subsection{Funcionamiento Interno del Modelo (\texttt{Empleado.php})}
+El modelo \texttt{Empleado} hereda de la clase base \texttt{Illuminate\textbackslash Database\textbackslash Eloquent\textbackslash Model}.
+
+\subsubsection{Asignación Masiva (\texttt{\$fillable})}
+La propiedad protegida \texttt{\$fillable} especifica explícitamente qué campos del formulario pueden ser insertados o actualizados mediante métodos como \texttt{Empleado::create(\$data)}. Esto previene ataques de \textit{Mass Assignment Violation}.
+
+\subsubsection{Relaciones entre Entidades (\texttt{belongsTo})}
+La función \texttt{turno()} define una relación de pertenencia hacia el modelo \texttt{Turno}:
+\begin{lstlisting}[language=purePHP]
+public function turno()
+{
+    return $this->belongsTo(Turno::class, 'id_turno');
+}
+\end{lstlisting}
+Esta relación permite acceder directamente a los atributos del turno desde la instancia de un empleado (por ejemplo: \texttt{\$empleado->turno->dias\_descanso}).
+
+\subsection{Funcionamiento del Controlador (\texttt{EmpleadoController.php})}
+El controlador de recursos agrupa las 7 acciones estándar de un CRUD RESTful:
+
+\begin{enumerate}
+    \item \textbf{\texttt{index()}:} Recupera la lista de empleados de la base de datos aplicando \textit{Eager Loading} (\texttt{Empleado::with('turno')->get()}) para optimizar las consultas SQL eliminando el problema $N+1$, y retorna la vista de listado.
+    \item \textbf{\texttt{create()}:} Consulta todos los turnos disponibles (\texttt{Turno::all()}) y renderiza el formulario para registrar un nuevo empleado.
+    \item \textbf{\texttt{store(Request \$request)}:} Ejecuta la validación estricta de la solicitud HTTP (\texttt{\$request->validate()}), verificando la unicidad del CI y correo electrónico, y la existencia previa del \texttt{id\_turno}. Si es correcto, persiste el nuevo empleado en MySQL.
+    \item \textbf{\texttt{show(Empleado \$empleado)}:} Utiliza \textit{Route Model Binding} para inyectar automáticamente la instancia del empleado correspondiente al ID recibido en la URL y mostrar sus detalles.
+    \item \textbf{\texttt{edit(Empleado \$empleado)} y \texttt{update(Request \$request, Empleado \$empleado)}:} Muestran y procesan la edición del empleado, ignorando el propio ID del usuario durante la validación de unicidad (\texttt{unique:empleados,ci,' . \$empleado->id}).
+    \item \textbf{\texttt{destroy(Empleado \$empleado)}:} Elimina el registro del empleado de manera segura y emite una notificación de éxito vía sesión.
+\end{enumerate}
+
+\subsection{Flujo Paso a Paso de una Petición de Empleados}
+\begin{enumerate}
+    \item El usuario ingresa a la URL \texttt{/empleados} en el navegador.
+    \item El enrutador (\texttt{routes/web.php}) intercepta la petición y llama al método \texttt{EmpleadoController@index}.
+    \item El controlador solicita los datos al modelo mediante \texttt{Empleado::with('turno')->get()}.
+    \item Eloquent ejecuta la consulta SQL hacia la base de datos MySQL y retorna los objetos estructurados.
+    \item El controlador transmite la variable \texttt{\$empleados} a la vista Blade \texttt{empleados.index}.
+    \item Laravel compila la plantilla Blade y responde con el HTML estilizado con Tailwind CSS al usuario.
+\end{enumerate}
+
+\newpage
+\section*{REPOSITORIO DEL PROYECTO}
+\addcontentsline{toc}{section}{REPOSITORIO DEL PROYECTO}
+
+Todo el código fuente desarrollado para esta entrega se encuentra actualizado y disponible en el repositorio de GitHub:
+
+\begin{center}
+    \url{https://github.com/Chanka-Dev/pollos-luisa}
+\end{center}
+
+\end{document}

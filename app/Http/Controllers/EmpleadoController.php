@@ -49,7 +49,8 @@ class EmpleadoController extends Controller
      */
     public function show(Empleado $empleado)
     {
-        return redirect()->route('empleados.index');
+        $empleado->load('turno');
+        return view('empleados.show', compact('empleado'));
     }
 
     /**
